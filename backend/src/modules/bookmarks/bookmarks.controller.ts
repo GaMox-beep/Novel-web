@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Param,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Param, Query, UseGuards } from '@nestjs/common';
 import { BookmarksService } from './bookmarks.service';
 import { QueryBookmarkDto } from './dto/query-bookmark.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';

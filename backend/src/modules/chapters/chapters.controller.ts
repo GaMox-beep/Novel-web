@@ -8,11 +8,14 @@ import {
   Param,
   UseGuards,
 } from '@nestjs/common';
+import { Role } from '@prisma/client';
 import { ChaptersService } from './chapters.service';
 import { CreateChapterDto } from './dto/create-chapter.dto';
 import { UpdateChapterDto } from './dto/update-chapter.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '../../common/guards/optional-jwt-auth.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 @Controller('chapters')
@@ -24,7 +27,7 @@ export class ChaptersController {
   async findByNovelSlugAndNumber(
     @Param('slug') slug: string,
     @Param('chapterNumber') chapterNumber: string,
-    @CurrentUser() user?: { id?: string; role?: string; coins?: number } | null,
+    @CurrentUser() user?: { id?: string; role?: Role; coins?: number } | null,
   ) {
     return this.chaptersService.findByNovelSlugAndNumber(
       slug,
@@ -37,27 +40,26 @@ export class ChaptersController {
   @Get(':id')
   async findOne(
     @Param('id') id: string,
-    @CurrentUser() user?: { id?: string; role?: string; coins?: number } | null,
+    @CurrentUser() user?: { id?: string; role?: Role; coins?: number } | null,
   ) {
     return this.chaptersService.findOne(id, user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/unlock')
-  async unlock(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async unlock(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.chaptersService.unlock(id, userId);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.AUTHOR)
   @Post()
   async create(@Body() createChapterDto: CreateChapterDto) {
     return this.chaptersService.create(createChapterDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.AUTHOR)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -66,7 +68,8 @@ export class ChaptersController {
     return this.chaptersService.update(id, updateChapterDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.chaptersService.remove(id);

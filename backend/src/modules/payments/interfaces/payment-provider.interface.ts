@@ -37,7 +37,7 @@ export interface QueryTransactionResult {
 
 export interface IPaymentProvider {
   createPaymentUrl(params: CreatePaymentUrlParams): Promise<PaymentUrlResult>;
-  verifyCallback(payload: Record<string, any>): CallbackVerificationResult;
+  verifyCallback(payload: Record<string, unknown>): CallbackVerificationResult;
   queryTransactionStatus(
     orderId: string,
     requestId: string,

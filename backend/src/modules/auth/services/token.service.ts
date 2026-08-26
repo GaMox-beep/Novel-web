@@ -1,6 +1,11 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../../../prisma/prisma.service';
+import { JwtPayload } from '../strategies/jwt.strategy';
 
 @Injectable()
 export class TokenService {
@@ -22,16 +27,16 @@ export class TokenService {
       );
     }
 
-    const payload = { sub: userId, email, role };
+    const payload: JwtPayload = { sub: userId, email, role };
 
     const accessToken = await this.jwtService.signAsync(payload, {
       secret: jwtSecret || 'dev_secret_jwt_key_novel_2026',
-      expiresIn: (process.env.JWT_EXPIRATION || '1d') as any,
+      expiresIn: '1d',
     });
 
     const refreshToken = await this.jwtService.signAsync(payload, {
       secret: jwtRefreshSecret || 'dev_secret_refresh_jwt_key_novel_2026',
-      expiresIn: (process.env.JWT_REFRESH_EXPIRATION || '7d') as any,
+      expiresIn: '7d',
     });
 
     const expiresAt = new Date();
@@ -48,6 +53,62 @@ export class TokenService {
     return {
       accessToken,
       refreshToken,
+    };
+  }
+
+  async refreshTokens(refreshToken: string) {
+    const jwtRefreshSecret =
+      process.env.JWT_REFRESH_SECRET || 'dev_secret_refresh_jwt_key_novel_2026';
+
+    let payload: JwtPayload;
+    try {
+      payload = await this.jwtService.verifyAsync<JwtPayload>(refreshToken, {
+        secret: jwtRefreshSecret,
+      });
+    } catch {
+      throw new UnauthorizedException(
+        'Refresh token không hợp lệ hoặc đã hết hạn',
+      );
+    }
+
+    const tokenRecord = await this.prisma.refreshToken.findUnique({
+      where: { token: refreshToken },
+      include: { user: true },
+    });
+
+    if (
+      !tokenRecord ||
+      tokenRecord.expiresAt < new Date() ||
+      payload.sub !== tokenRecord.userId
+    ) {
+      if (tokenRecord) {
+        await this.prisma.refreshToken.delete({
+          where: { id: tokenRecord.id },
+        });
+      }
+      throw new UnauthorizedException(
+        'Refresh token không tồn tại hoặc đã hết hạn',
+      );
+    }
+
+    // Token rotation: xóa refresh token cũ
+    await this.prisma.refreshToken.delete({
+      where: { id: tokenRecord.id },
+    });
+
+    const user = tokenRecord.user;
+    const tokens = await this.generateTokens(user.id, user.email, user.role);
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+        avatar: user.avatar,
+        coins: user.coins,
+      },
+      ...tokens,
     };
   }
 

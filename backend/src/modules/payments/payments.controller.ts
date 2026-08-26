@@ -45,7 +45,10 @@ export class PaymentsController {
       (req.headers['x-forwarded-for'] as string) ||
       req.socket.remoteAddress ||
       '127.0.0.1';
-    const clientIp = rawIp.split(',')[0].trim().replace(/^::ffff:/, '');
+    const clientIp = rawIp
+      .split(',')[0]
+      .trim()
+      .replace(/^::ffff:/, '');
 
     return this.paymentsService.createPayment(userId, dto, clientIp);
   }

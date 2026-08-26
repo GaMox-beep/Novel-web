@@ -12,6 +12,20 @@ import type {
   QueryTransactionResult,
 } from '../interfaces/payment-provider.interface';
 
+interface VnpayQueryResponse {
+  vnp_ResponseCode?: string;
+  vnp_TransactionStatus?: string;
+  vnp_TransactionNo?: string;
+  vnp_Amount?: number | string;
+  vnp_Message?: string;
+}
+
+function toStr(val: unknown): string {
+  if (typeof val === 'string') return val;
+  if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+  return '';
+}
+
 @Injectable()
 export class VnpayService implements IPaymentProvider {
   private readonly logger = new Logger(VnpayService.name);
@@ -89,9 +103,7 @@ export class VnpayService implements IPaymentProvider {
   /**
    * Tạo URL thanh toán VNPay Gateway v2.1.0 với HMAC-SHA512
    */
-  async createPaymentUrl(
-    params: CreatePaymentUrlParams,
-  ): Promise<PaymentUrlResult> {
+  createPaymentUrl(params: CreatePaymentUrlParams): Promise<PaymentUrlResult> {
     const {
       orderId,
       amount,
@@ -103,7 +115,8 @@ export class VnpayService implements IPaymentProvider {
 
     const createDate = this.formatVnpayDate();
     const vnpAmount = Math.round(amount * 100);
-    const cleanOrderInfo = this.sanitizeOrderInfo(orderInfo) || `Nap don ${orderId}`;
+    const cleanOrderInfo =
+      this.sanitizeOrderInfo(orderInfo) || `Nap don ${orderId}`;
 
     const vnpParams: Record<string, string | number> = {
       vnp_Version: '2.1.0',
@@ -137,21 +150,21 @@ export class VnpayService implements IPaymentProvider {
       `Generated VNPay Payment URL for orderId: ${orderId}, amount: ${amount}`,
     );
 
-    return {
+    return Promise.resolve({
       payUrl,
       orderId,
       requestId,
-    };
+    });
   }
 
   /**
    * Xác thực chữ ký số HMAC-SHA512 và parse kết quả giao dịch từ VNPay Callback/IPN
    */
-  verifyCallback(payload: Record<string, any>): CallbackVerificationResult {
+  verifyCallback(payload: Record<string, unknown>): CallbackVerificationResult {
     try {
-      const secureHash = payload['vnp_SecureHash'] as string;
-      const orderId = String(payload['vnp_TxnRef'] || '');
-      const transId = String(payload['vnp_TransactionNo'] || '');
+      const secureHash = toStr(payload['vnp_SecureHash']);
+      const orderId = toStr(payload['vnp_TxnRef']);
+      const transId = toStr(payload['vnp_TransactionNo']);
       const vnpAmount = payload['vnp_Amount']
         ? Number(payload['vnp_Amount']) / 100
         : 0;
@@ -174,8 +187,9 @@ export class VnpayService implements IPaymentProvider {
           key !== 'vnp_SecureHash' &&
           key !== 'vnp_SecureHashType'
         ) {
-          if (value !== '' && value !== undefined && value !== null) {
-            vnpParams[key] = String(value);
+          const strVal = toStr(value);
+          if (strVal !== '') {
+            vnpParams[key] = strVal;
           }
         }
       }
@@ -209,16 +223,18 @@ export class VnpayService implements IPaymentProvider {
         orderId,
         transId,
         amount: vnpAmount,
-        message: isSuccess ? 'Thành công' : `Lỗi mã ${payload['vnp_ResponseCode']}`,
+        message: isSuccess
+          ? 'Thành công'
+          : `Lỗi mã ${toStr(payload['vnp_ResponseCode'])}`,
       };
     } catch (err) {
       this.logger.error('Error verifying VNPay signature', err);
       return {
         isValid: false,
         isPaid: false,
-        orderId: String(payload['vnp_TxnRef'] || ''),
-        transId: String(payload['vnp_TransactionNo'] || ''),
-        amount: Number(payload['vnp_Amount'] || 0) / 100,
+        orderId: toStr(payload['vnp_TxnRef']),
+        transId: toStr(payload['vnp_TransactionNo']),
+        amount: Number(payload['vnp_Amount'] ?? 0) / 100,
         message: 'Verification exception',
       };
     }
@@ -259,7 +275,9 @@ export class VnpayService implements IPaymentProvider {
     };
 
     try {
-      this.logger.log(`Querying VNPay transaction status for orderId: ${orderId}`);
+      this.logger.log(
+        `Querying VNPay transaction status for orderId: ${orderId}`,
+      );
       const response = await fetch(this.queryUrl, {
         method: 'POST',
         headers: {
@@ -268,9 +286,9 @@ export class VnpayService implements IPaymentProvider {
         body: JSON.stringify(requestBody),
       });
 
-      const data = await response.json();
+      const data = (await response.json()) as VnpayQueryResponse;
       this.logger.log(
-        `VNPay query response for ${orderId}: ResponseCode=${data.vnp_ResponseCode}, TransactionStatus=${data.vnp_TransactionStatus}`,
+        `VNPay query response for ${orderId}: ResponseCode=${data.vnp_ResponseCode ?? ''}, TransactionStatus=${data.vnp_TransactionStatus ?? ''}`,
       );
 
       const isPaid =

@@ -80,7 +80,9 @@ export class CategoriesService {
     }
 
     const name = updateCategoryDto.name?.trim();
-    let slug = updateCategoryDto.slug ? generateSlug(updateCategoryDto.slug) : undefined;
+    let slug = updateCategoryDto.slug
+      ? generateSlug(updateCategoryDto.slug)
+      : undefined;
     if (!slug && name && name !== category.name) {
       slug = generateSlug(name);
     }
@@ -90,7 +92,9 @@ export class CategoriesService {
         where: {
           id: { not: id },
           OR: [
-            ...(name ? [{ name: { equals: name, mode: 'insensitive' as const } }] : []),
+            ...(name
+              ? [{ name: { equals: name, mode: 'insensitive' as const } }]
+              : []),
             ...(slug ? [{ slug }] : []),
           ],
         },

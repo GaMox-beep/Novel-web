@@ -37,4 +37,4 @@ async function bootstrap() {
   const backendUrl = process.env.BACKEND_URL ?? `http://localhost:${port}`;
   Logger.log(`Application is running on: ${backendUrl}/api`, 'Bootstrap');
 }
-bootstrap();
+void bootstrap();

@@ -8,6 +8,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { TokenService } from './services/token.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { GoogleProfileDto, GoogleAuthResult } from './dto/google-auth.dto';
 
 @Injectable()
@@ -109,6 +110,18 @@ export class AuthService {
 
     return {
       message: 'Đăng xuất thành công',
+    };
+  }
+
+  /**
+   * Làm mới Access Token bằng Refresh Token (Token Rotation)
+   */
+  async refreshToken(dto: RefreshTokenDto) {
+    const result = await this.tokenService.refreshTokens(dto.refreshToken);
+
+    return {
+      message: 'Làm mới token thành công',
+      ...result,
     };
   }
 

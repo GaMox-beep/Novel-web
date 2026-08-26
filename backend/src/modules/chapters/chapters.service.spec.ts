@@ -75,7 +75,11 @@ describe('ChaptersService — VIP & Coin Economy Loop', () => {
       prisma.novel.update.mockResolvedValue({});
       prisma.chapter.findFirst.mockResolvedValue(null);
 
-      const result = await service.findByNovelSlugAndNumber('tu-chan-gioi', 1, null);
+      const result = await service.findByNovelSlugAndNumber(
+        'tu-chan-gioi',
+        1,
+        null,
+      );
 
       expect(result.isUnlocked).toBe(true);
       expect(result.content).toBe(fullContent);
@@ -98,7 +102,11 @@ describe('ChaptersService — VIP & Coin Economy Loop', () => {
       prisma.novel.update.mockResolvedValue({});
       prisma.chapter.findFirst.mockResolvedValue(null);
 
-      const result = await service.findByNovelSlugAndNumber('tu-chan-gioi', 2, null);
+      const result = await service.findByNovelSlugAndNumber(
+        'tu-chan-gioi',
+        2,
+        null,
+      );
 
       expect(result.isUnlocked).toBe(false);
       expect(result.isVip).toBe(true);

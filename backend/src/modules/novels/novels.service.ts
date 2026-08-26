@@ -1,8 +1,5 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { StorageService } from '../../upload/storage.service';
 import { CreateNovelDto } from './dto/create-novel.dto';
@@ -71,7 +68,7 @@ export class NovelsService {
 
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    const where: Prisma.NovelWhereInput = {};
 
     if (search) {
       where.OR = [

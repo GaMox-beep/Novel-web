@@ -3,11 +3,11 @@ import {
   BadRequestException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 
 @Injectable()
 export class StorageService {
-  private supabase: SupabaseClient;
+  private readonly supabase: ReturnType<typeof createClient>;
 
   constructor() {
     const supabaseUrl = process.env.SUPABASE_URL;

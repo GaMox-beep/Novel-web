@@ -1,9 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  BadRequestException,
-  ForbiddenException,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { MomoService } from './providers/momo.service';
@@ -13,7 +9,6 @@ import { PaymentMethod, TransactionStatus } from '@prisma/client';
 describe('PaymentsService', () => {
   let service: PaymentsService;
   let prismaService: any;
-  let momoService: any;
   let vnpayService: any;
 
   beforeEach(async () => {
@@ -59,7 +54,6 @@ describe('PaymentsService', () => {
 
     service = module.get<PaymentsService>(PaymentsService);
     prismaService = module.get(PrismaService);
-    momoService = module.get(MomoService);
     vnpayService = module.get(VnpayService);
   });
 

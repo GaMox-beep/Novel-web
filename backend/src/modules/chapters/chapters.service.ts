@@ -44,11 +44,7 @@ export class ChaptersService {
       throw new ConflictException(`Truyện này đã có Chương ${chapterNumber}`);
     }
 
-    const calculatedPrice = isVip
-      ? price !== undefined
-        ? price
-        : 5
-      : 0;
+    const calculatedPrice = isVip ? (price !== undefined ? price : 5) : 0;
 
     const chapter = await this.prisma.chapter.create({
       data: {
@@ -91,7 +87,13 @@ export class ChaptersService {
           chapterNumber: { lt: chapterNumber },
         },
         orderBy: { chapterNumber: 'desc' },
-        select: { id: true, chapterNumber: true, title: true, isVip: true, price: true },
+        select: {
+          id: true,
+          chapterNumber: true,
+          title: true,
+          isVip: true,
+          price: true,
+        },
       }),
       this.prisma.chapter.findFirst({
         where: {
@@ -99,7 +101,13 @@ export class ChaptersService {
           chapterNumber: { gt: chapterNumber },
         },
         orderBy: { chapterNumber: 'asc' },
-        select: { id: true, chapterNumber: true, title: true, isVip: true, price: true },
+        select: {
+          id: true,
+          chapterNumber: true,
+          title: true,
+          isVip: true,
+          price: true,
+        },
       }),
     ]);
     return { prevChapter, nextChapter };

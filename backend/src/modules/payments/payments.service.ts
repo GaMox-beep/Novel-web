@@ -190,7 +190,7 @@ export class PaymentsService {
    */
   private async verifyAndCompletePayment(
     provider: IPaymentProvider,
-    payload: Record<string, any>,
+    payload: Record<string, unknown>,
   ): Promise<CallbackVerificationResult> {
     const result = provider.verifyCallback(payload);
     if (result.isValid) {
@@ -214,7 +214,7 @@ export class PaymentsService {
 
     const result = await this.verifyAndCompletePayment(
       this.momoService,
-      ipnDto,
+      ipnDto as unknown as Record<string, unknown>,
     );
 
     if (!result.isValid) {
@@ -229,8 +229,14 @@ export class PaymentsService {
    * Xử lý IPN Webhook từ VNPay
    */
   async handleVnpayIpn(query: Record<string, unknown>) {
+    const txnRef =
+      typeof query['vnp_TxnRef'] === 'string' ? query['vnp_TxnRef'] : '';
+    const responseCode =
+      typeof query['vnp_ResponseCode'] === 'string'
+        ? query['vnp_ResponseCode']
+        : '';
     this.logger.log(
-      `Received VNPay IPN for orderId: ${query['vnp_TxnRef']}, ResponseCode: ${query['vnp_ResponseCode']}`,
+      `Received VNPay IPN for orderId: ${txnRef}, ResponseCode: ${responseCode}`,
     );
 
     try {
@@ -240,9 +246,7 @@ export class PaymentsService {
       );
 
       if (!result.isValid) {
-        this.logger.warn(
-          `Invalid VNPay IPN signature for orderId: ${query['vnp_TxnRef']}`,
-        );
+        this.logger.warn(`Invalid VNPay IPN signature for orderId: ${txnRef}`);
         return { RspCode: '97', Message: 'Checksum failed' };
       }
 
@@ -261,7 +265,7 @@ export class PaymentsService {
   async verifyPayment(
     userId: string,
     orderId: string,
-    queryParams?: Record<string, any>,
+    queryParams?: Record<string, unknown>,
   ) {
     const transaction = await this.prisma.transaction.findUnique({
       where: { orderId },

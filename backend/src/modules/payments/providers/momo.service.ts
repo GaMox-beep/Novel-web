@@ -38,6 +38,12 @@ export interface MomoQueryResponse {
   responseTime: number;
 }
 
+function toStr(val: unknown): string {
+  if (typeof val === 'string') return val;
+  if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+  return '';
+}
+
 @Injectable()
 export class MomoService implements IPaymentProvider {
   private readonly logger = new Logger(MomoService.name);
@@ -55,7 +61,8 @@ export class MomoService implements IPaymentProvider {
   private readonly defaultReturnUrl =
     process.env.MOMO_RETURN_URL || 'http://localhost:5173/nap/ket-qua';
   private readonly defaultNotifyUrl =
-    process.env.MOMO_NOTIFY_URL || 'http://localhost:3000/api/payments/momo/ipn';
+    process.env.MOMO_NOTIFY_URL ||
+    'http://localhost:3000/api/payments/momo/ipn';
   private readonly defaultRequestType =
     process.env.MOMO_REQUEST_TYPE || 'payWithATM';
 
@@ -111,7 +118,7 @@ export class MomoService implements IPaymentProvider {
         body: JSON.stringify(requestBody),
       });
 
-      const data: MomoCreatePaymentResponse = await response.json();
+      const data = (await response.json()) as MomoCreatePaymentResponse;
 
       if (data.resultCode !== 0) {
         this.logger.error(
@@ -148,31 +155,29 @@ export class MomoService implements IPaymentProvider {
   /**
    * Xác thực chữ ký số HMAC-SHA256 và parse kết quả giao dịch từ MoMo Callback/IPN
    */
-  verifyCallback(payload: Record<string, any>): CallbackVerificationResult {
+  verifyCallback(payload: Record<string, unknown>): CallbackVerificationResult {
     try {
-      const {
-        amount = 0,
-        extraData = '',
-        message = '',
-        orderId = '',
-        orderInfo = '',
-        orderType = '',
-        partnerCode = '',
-        payType = '',
-        requestId = '',
-        responseTime = 0,
-        resultCode,
-        transId = '',
-        signature = '',
-      } = payload;
+      const amount = Number(payload['amount'] ?? 0);
+      const extraData = toStr(payload['extraData']);
+      const message = toStr(payload['message']);
+      const orderId = toStr(payload['orderId']);
+      const orderInfo = toStr(payload['orderInfo']);
+      const orderType = toStr(payload['orderType']);
+      const partnerCode = toStr(payload['partnerCode']);
+      const payType = toStr(payload['payType']);
+      const requestId = toStr(payload['requestId']);
+      const responseTime = Number(payload['responseTime'] ?? 0);
+      const resultCode = toStr(payload['resultCode']);
+      const transId = toStr(payload['transId']);
+      const signature = toStr(payload['signature']);
 
       if (!signature) {
         return {
           isValid: false,
           isPaid: false,
-          orderId: String(orderId),
-          transId: String(transId),
-          amount: Number(amount),
+          orderId,
+          transId,
+          amount,
           message: 'Missing MoMo signature',
         };
       }
@@ -185,30 +190,31 @@ export class MomoService implements IPaymentProvider {
         .digest('hex');
 
       const expectedBuf = Buffer.from(expectedSignature, 'utf8');
-      const actualBuf = Buffer.from(String(signature), 'utf8');
+      const actualBuf = Buffer.from(signature, 'utf8');
 
       const isValid =
         expectedBuf.length === actualBuf.length &&
         crypto.timingSafeEqual(expectedBuf, actualBuf);
 
-      const isPaid = isValid && (resultCode === 0 || resultCode === '0');
+      const isPaid =
+        isValid && (resultCode === '0' || Number(resultCode) === 0);
 
       return {
         isValid,
         isPaid,
-        orderId: String(orderId),
-        transId: String(transId),
-        amount: Number(amount),
-        message: String(message || (isPaid ? 'Thành công' : 'Thất bại')),
+        orderId,
+        transId,
+        amount,
+        message: message || (isPaid ? 'Thành công' : 'Thất bại'),
       };
     } catch (err) {
       this.logger.error('Error verifying MoMo callback signature', err);
       return {
         isValid: false,
         isPaid: false,
-        orderId: String(payload.orderId || ''),
-        transId: String(payload.transId || ''),
-        amount: Number(payload.amount || 0),
+        orderId: toStr(payload['orderId']),
+        transId: toStr(payload['transId']),
+        amount: Number(payload['amount'] ?? 0),
         message: 'Verification exception',
       };
     }
@@ -248,7 +254,7 @@ export class MomoService implements IPaymentProvider {
         body: JSON.stringify(requestBody),
       });
 
-      const data: MomoQueryResponse = await response.json();
+      const data = (await response.json()) as MomoQueryResponse;
       this.logger.log(
         `MoMo query response for orderId ${orderId}: resultCode=${data.resultCode}, message=${data.message}`,
       );

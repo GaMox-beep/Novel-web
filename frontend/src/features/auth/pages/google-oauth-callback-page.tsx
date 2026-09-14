@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
-import { useAuth } from '../../context/AuthContext'
-import type { User } from '../../types'
-import { paths } from '../../config/paths'
+import { useAuth } from '../../../context/AuthContext'
+import type { User } from '../../../types'
+import { paths } from '../../../config/paths'
 
 export const GoogleOAuthCallbackPage = () => {
   const [searchParams] = useSearchParams()

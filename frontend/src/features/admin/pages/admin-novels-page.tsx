@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom'
-import { useNovelAdmin } from '../../features/novels/hooks/use-novel-admin'
-import { useCategories } from '../../features/categories/api/get-categories'
-import { NovelFilterBar } from '../../features/novels/components/novel-filter-bar'
-import { NovelTableRow } from '../../features/novels/components/novel-table-row'
-import { NovelFormModal } from '../../features/novels/components/novel-form-modal'
-import { paths } from '../../config/paths'
+import { useNovelAdmin } from '../../novels/hooks/use-novel-admin'
+import { useCategories } from '../../categories/api/get-categories'
+import { NovelFilterBar } from '../../novels/components/novel-filter-bar'
+import { NovelTableRow } from '../../novels/components/novel-table-row'
+import { NovelFormModal } from '../../novels/components/novel-form-modal'
+import { paths } from '../../../config/paths'
 
 export const AdminNovelsPage = () => {
   const navigate = useNavigate()

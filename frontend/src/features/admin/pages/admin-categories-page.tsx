@@ -1,6 +1,6 @@
-import { useCategoryAdmin } from '../../features/categories/hooks/use-category-admin'
-import { CategoryTableRow } from '../../features/categories/components/category-table-row'
-import { CategoryFormModal } from '../../features/categories/components/category-form-modal'
+import { useCategoryAdmin } from '../../categories/hooks/use-category-admin'
+import { CategoryTableRow } from '../../categories/components/category-table-row'
+import { CategoryFormModal } from '../../categories/components/category-form-modal'
 
 export const AdminCategoriesPage = () => {
   const {

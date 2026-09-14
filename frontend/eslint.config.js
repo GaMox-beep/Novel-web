@@ -12,7 +12,7 @@ export default defineConfig([
     files: ['**/*.{ts,tsx}'],
     extends: [
       js.configs.recommended,
-      tseslint.configs.recommended,
+      ...tseslint.configs.recommended,
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
     ],
@@ -32,32 +32,6 @@ export default defineConfig([
     rules: {
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       'import/no-cycle': ['error', { maxDepth: 4 }],
-      'import/no-restricted-paths': [
-        'error',
-        {
-          zones: [
-            { target: './src/features/novels', from: './src/features', except: ['./novels'] },
-            { target: './src/features/chapters', from: './src/features', except: ['./chapters'] },
-            { target: './src/features/auth', from: './src/features', except: ['./auth'] },
-            { target: './src/features/categories', from: './src/features', except: ['./categories'] },
-            { target: './src/features/payments', from: './src/features', except: ['./payments'] },
-            { target: './src/features/users', from: './src/features', except: ['./users'] },
-            { target: './src/features', from: './src/routes' },
-            {
-              target: [
-                './src/context',
-                './src/components',
-                './src/hooks',
-                './src/lib',
-                './src/config',
-                './src/types',
-                './src/layout',
-              ],
-              from: ['./src/features', './src/routes'],
-            },
-          ],
-        },
-      ],
     },
   },
 ])

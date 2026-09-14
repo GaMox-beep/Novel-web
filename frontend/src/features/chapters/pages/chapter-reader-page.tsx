@@ -1,20 +1,20 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { useChapterByNumber } from '../../features/chapters/api/get-chapter-by-number'
-import { useNovel } from '../../features/novels/api/get-novel'
-import { useUnlockChapter } from '../../features/chapters/api/unlock-chapter'
-import { ChapterReaderSkeleton } from '../../features/chapters/components/chapter-reader-skeleton'
-import { ChapterReaderHeader } from '../../features/chapters/components/chapter-reader-header'
+import { useChapterByNumber } from '../api/get-chapter-by-number'
+import { useNovel } from '../../novels/api/get-novel'
+import { useUnlockChapter } from '../api/unlock-chapter'
+import { ChapterReaderSkeleton } from '../components/chapter-reader-skeleton'
+import { ChapterReaderHeader } from '../components/chapter-reader-header'
 import {
   ChapterReaderContent,
   type FontSizeOption,
   type LineHeightOption,
-} from '../../features/chapters/components/chapter-reader-content'
-import { ChapterReaderToolbar } from '../../features/chapters/components/chapter-reader-toolbar'
-import { ChapterReaderPaywall } from '../../features/chapters/components/chapter-reader-paywall'
-import { useAuth } from '../../context/AuthContext'
-import { BookmarkButton } from '../../features/bookmarks/components/bookmark-button'
-import { paths } from '../../config/paths'
+} from '../components/chapter-reader-content'
+import { ChapterReaderToolbar } from '../components/chapter-reader-toolbar'
+import { ChapterReaderPaywall } from '../components/chapter-reader-paywall'
+import { useAuth } from '../../../context/AuthContext'
+import { BookmarkButton } from '../../bookmarks/components/bookmark-button'
+import { paths } from '../../../config/paths'
 
 const STORAGE_KEY_FONT_SIZE = 'webnovel_reader_font_size'
 const STORAGE_KEY_LINE_HEIGHT = 'webnovel_reader_line_height'

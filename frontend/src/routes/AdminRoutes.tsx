@@ -1,10 +1,10 @@
 import { Route } from 'react-router-dom'
 import AdminLayout from '../layout/AdminLayout'
-import { AdminDashboardPage } from './admin/admin-dashboard-page'
-import { AdminNovelsPage } from './admin/admin-novels-page'
-import { AdminCategoriesPage } from './admin/admin-categories-page'
-import { AdminChaptersPage } from './admin/admin-chapters-page'
-import ProtectedRoute from './ProtectedRoute'
+import { AdminDashboardPage } from '../features/admin/pages/admin-dashboard-page'
+import { AdminNovelsPage } from '../features/admin/pages/admin-novels-page'
+import { AdminCategoriesPage } from '../features/admin/pages/admin-categories-page'
+import { AdminChaptersPage } from '../features/admin/pages/admin-chapters-page'
+import ProtectedRoute from '../components/guards/protected-route'
 import { paths } from '../config/paths'
 
 // eslint-disable-next-line react-refresh/only-export-components

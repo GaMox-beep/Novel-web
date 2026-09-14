@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { paths } from '../../config/paths';
-import { useGetRechargePackages } from '../../features/payments/api/get-packages';
-import { useCreatePayment } from '../../features/payments/api/create-payment';
-import { useGetMyTransactions } from '../../features/payments/api/get-my-transactions';
-import { RechargePackageCard } from '../../features/payments/components/recharge-package-card';
-import { PaymentMethodSelector } from '../../features/payments/components/payment-method-selector';
-import { RechargeSummary } from '../../features/payments/components/recharge-summary';
-import { RecentTransactionsTable } from '../../features/payments/components/recent-transactions-table';
-import type { PaymentMethod } from '../../features/payments/types';
+import { useAuth } from '../../../context/AuthContext';
+import { paths } from '../../../config/paths';
+import { useGetRechargePackages } from '../api/get-packages';
+import { useCreatePayment } from '../api/create-payment';
+import { useGetMyTransactions } from '../api/get-my-transactions';
+import { RechargePackageCard } from '../components/recharge-package-card';
+import { PaymentMethodSelector } from '../components/payment-method-selector';
+import { RechargeSummary } from '../components/recharge-summary';
+import { RecentTransactionsTable } from '../components/recent-transactions-table';
+import type { PaymentMethod } from '../types';
 
 export const RechargePage = () => {
   const navigate = useNavigate();

@@ -1,10 +1,10 @@
 import { useParams, Link } from 'react-router-dom'
-import { useNovel } from '../../features/novels/api/get-novel'
-import { NovelDetailHeader } from '../../features/novels/components/novel-detail-header'
-import { NovelChapterList } from '../../features/novels/components/novel-chapter-list'
-import { NovelDetailSkeleton } from '../../features/novels/components/novel-detail-skeleton'
-import { BookmarkButton } from '../../features/bookmarks/components/bookmark-button'
-import { paths } from '../../config/paths'
+import { useNovel } from '../api/get-novel'
+import { NovelDetailHeader } from '../components/novel-detail-header'
+import { NovelChapterList } from '../components/novel-chapter-list'
+import { NovelDetailSkeleton } from '../components/novel-detail-skeleton'
+import { BookmarkButton } from '../../bookmarks/components/bookmark-button'
+import { paths } from '../../../config/paths'
 
 export const NovelDetailPage = () => {
   const { slug } = useParams<{ slug: string }>()
@@ -31,8 +31,8 @@ export const NovelDetailPage = () => {
               strokeLinejoin="round"
             >
               <circle cx="12" cy="12" r="10" />
-              <line x1="12" x2="12" y1="8" y2="12" />
-              <line x1="12" x2="12.01" y1="16" y2="16" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
             </svg>
           </div>
           <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">Không Tìm Thấy Truyện</h2>

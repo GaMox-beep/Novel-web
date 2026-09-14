@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { useNovels } from '../../features/novels/api/get-novels'
-import { useCategories } from '../../features/categories/api/get-categories'
-import { NovelCard } from '../../features/novels/components/novel-card'
-import { CategoryFilterPills } from '../../features/categories/components/category-filter-pills'
-import { NovelFilterToolbar } from '../../features/novels/components/novel-filter-toolbar'
+import { useNovels } from '../api/get-novels'
+import { useCategories } from '../../categories/api/get-categories'
+import { NovelCard } from '../components/novel-card'
+import { CategoryFilterPills } from '../../categories/components/category-filter-pills'
+import { NovelFilterToolbar } from '../components/novel-filter-toolbar'
 
 export const NovelsByCategoryPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()

@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../../context/AuthContext'
 
 interface ProtectedRouteProps {
   redirectPath?: string
@@ -26,7 +26,7 @@ const isTokenValidAdmin = (token: string | null): boolean => {
   }
 }
 
-const ProtectedRoute = ({ redirectPath = '/' }: ProtectedRouteProps) => {
+export const ProtectedRoute = ({ redirectPath = '/' }: ProtectedRouteProps) => {
   const { user, isAuthenticated, accessToken, isLoadingUser } = useAuth()
 
   if (accessToken && isLoadingUser) {

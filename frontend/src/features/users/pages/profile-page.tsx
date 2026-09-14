@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Navigate } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
-import { paths } from '../../config/paths'
-import { ProfileDetailsTab } from '../../features/users/components/ProfileDetailsTab'
-import { ReadingHistoryTab } from '../../features/users/components/ReadingHistoryTab'
-import { AccountSettingsTab } from '../../features/users/components/AccountSettingsTab'
-import { ProfileTransactionsTab } from '../../features/payments/components/profile-transactions-tab'
+import { useAuth } from '../../../context/AuthContext'
+import { paths } from '../../../config/paths'
+import { ProfileDetailsTab } from '../components/profile-details-tab'
+import { ReadingHistoryTab } from '../components/reading-history-tab'
+import { AccountSettingsTab } from '../components/account-settings-tab'
+import { ProfileTransactionsTab } from '../../payments/components/profile-transactions-tab'
 
 export const ProfilePage = () => {
   const { user, isAuthenticated, accessToken, isLoadingUser, logout } = useAuth()

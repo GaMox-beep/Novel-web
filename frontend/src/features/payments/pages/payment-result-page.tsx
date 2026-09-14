@@ -1,8 +1,8 @@
 import { useEffect, useMemo } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { paths } from '../../config/paths';
-import { useVerifyPayment } from '../../features/payments/api/verify-payment';
+import { paths } from '../../../config/paths';
+import { useVerifyPayment } from '../api/verify-payment';
 
 export const PaymentResultPage = () => {
   const [searchParams] = useSearchParams();

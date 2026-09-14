@@ -1,6 +1,6 @@
-import { paths } from '../../config/paths'
-import { useNovels } from '../../features/novels/api/get-novels'
-import { NovelSection } from '../../features/novels/components/novel-section'
+import { paths } from '../../../config/paths'
+import { useNovels } from '../../novels/api/get-novels'
+import { NovelSection } from '../../novels/components/novel-section'
 
 export const HomePage = () => {
   const {

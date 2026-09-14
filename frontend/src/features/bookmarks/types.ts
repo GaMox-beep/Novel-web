@@ -1,6 +1,6 @@
-import type { NovelBase } from '../../types/novel'
+import type { Novel } from '../novels/types'
 
-export interface BookmarkedNovelItem extends NovelBase {
+export interface BookmarkedNovelItem extends Novel {
   bookmarkId: string
   bookmarkedAt: string
 }

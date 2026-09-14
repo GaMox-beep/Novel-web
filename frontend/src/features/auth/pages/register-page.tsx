@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { RegisterForm } from '../../features/auth/components/register-form'
-import { paths } from '../../config/paths'
+import { RegisterForm } from '../components/register-form'
+import { paths } from '../../../config/paths'
 
 export const RegisterPage = () => {
   const navigate = useNavigate()

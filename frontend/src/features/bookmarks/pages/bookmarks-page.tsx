@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
-import { paths } from '../../config/paths'
-import { useBookmarks } from '../../features/bookmarks/api/get-bookmarks'
-import { useToggleBookmark } from '../../features/bookmarks/api/toggle-bookmark'
-import { NovelCard } from '../../features/novels/components/novel-card'
-import { NovelCardSkeleton } from '../../features/novels/components/novel-card-skeleton'
+import { useAuth } from '../../../context/AuthContext'
+import { paths } from '../../../config/paths'
+import { useBookmarks } from '../api/get-bookmarks'
+import { useToggleBookmark } from '../api/toggle-bookmark'
+import { NovelCard } from '../../novels/components/novel-card'
+import { NovelCardSkeleton } from '../../novels/components/novel-card-skeleton'
 
 interface RemoveBookmarkButtonProps {
   novelId: string

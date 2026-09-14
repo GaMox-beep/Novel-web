@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { useNovels } from '../../features/novels/api/get-novels'
-import { useNovel } from '../../features/novels/api/get-novel'
-import { useChapterAdmin } from '../../features/chapters/hooks/use-chapter-admin'
-import { ChapterTableRow } from '../../features/chapters/components/chapter-table-row'
-import { ChapterFormModal } from '../../features/chapters/components/chapter-form-modal'
+import { useNovels } from '../../novels/api/get-novels'
+import { useNovel } from '../../novels/api/get-novel'
+import { useChapterAdmin } from '../../chapters/hooks/use-chapter-admin'
+import { ChapterTableRow } from '../../chapters/components/chapter-table-row'
+import { ChapterFormModal } from '../../chapters/components/chapter-form-modal'
 
 export const AdminChaptersPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
